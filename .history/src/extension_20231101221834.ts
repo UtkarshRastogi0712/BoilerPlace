@@ -36,8 +36,8 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  let readDirectory = vscode.commands.registerCommand(
-    "boilerplace.readDirectory",
+  let generateBoilerplate = vscode.commands.registerCommand(
+    "boilerplace.generateBoilerplate",
     async () => {
       vscode.window.showInformationMessage("Running");
       if (vscode.workspace.workspaceFolders !== undefined) {

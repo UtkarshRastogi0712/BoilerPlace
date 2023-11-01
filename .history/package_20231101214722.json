@@ -18,8 +18,8 @@
         "title": "Hello World"
       },
       {
-        "command": "boilerplace.readDirectory",
-        "title": "Read Directory"
+        "command": "boilerplace.generateBoilerplate",
+        "title": "Generate Boilerplate"
       }
     ],
     "snippets": [

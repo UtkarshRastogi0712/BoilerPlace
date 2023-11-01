@@ -36,17 +36,11 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  let readDirectory = vscode.commands.registerCommand(
-    "boilerplace.readDirectory",
-    async () => {
+  let generateBoilerplate = vscode.commands.registerCommand(
+    "boilerplace.generateBoilerplate",
+    () => {
       vscode.window.showInformationMessage("Running");
-      if (vscode.workspace.workspaceFolders !== undefined) {
-        console.log(
-          await vscode.workspace.fs.readDirectory(
-            vscode.Uri.parse(vscode.workspace.workspaceFolders[0].uri.path)
-          )
-        );
-      }
+      console.log(vscode.workspace.fs.readDirectory(vscode.Uri.file("./")));
     }
   );
   context.subscriptions.push(disposable);
