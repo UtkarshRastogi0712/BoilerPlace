@@ -1,0 +1,9 @@
+{
+  "Get by id": {
+    "prefix": ["get", "id", "get-by-id"],
+    "body": [
+      "const getNote = async (id) => {try{const note = await Note.findOne({ _id: id });return note;} catch (err) {console.error(err);throw new Error(err);}};"
+    ],
+    "description": "Get entity by id"
+  }
+}

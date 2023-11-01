@@ -17,12 +17,6 @@
         "command": "boilerplace.helloWorld",
         "title": "Hello World"
       }
-    ],
-    "snippets": [
-      {
-        "language": "javascript",
-        "path": "./snippets/javascript.json"
-      }
     ]
   },
   "scripts": {

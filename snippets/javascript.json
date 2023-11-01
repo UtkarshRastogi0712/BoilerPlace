@@ -1,0 +1,17 @@
+{
+  "Get by id": {
+    "prefix": ["get", "id", "get-by-id"],
+    "body": [
+      "const ${1:getElementById} = async (id) => {",
+      "try {",
+      "const ${2:element} = await ${3:Element}.findOne({ _id: id });",
+      "return ${2:element};",
+      "} catch (err) {",
+      "console.error(err);",
+      "throw new Error(err);",
+      "}",
+      "};"
+    ],
+    "description": "Get entity by id"
+  }
+}
