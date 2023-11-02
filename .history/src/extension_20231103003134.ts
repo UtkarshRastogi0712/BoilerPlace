@@ -56,7 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   let init = vscode.commands.registerCommand("boilerplace.init", async () => {
     const initFile: string =
-      '{"origin" : "app origin path", "elements" : ["entities"]}';
+      '{origin: "app origin path", elements: ["models"]}';
     const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
     let origin: vscode.Uri;
 
@@ -68,11 +68,25 @@ export function activate(context: vscode.ExtensionContext) {
       const enc: TextEncoder = new TextEncoder();
       const data: Uint8Array = enc.encode(initFile);
 
+      vscode.window.showInformationMessage(origin.toString());
       wsedits.createFile(origin, {
-        ignoreIfExists: true,
+        overwrite: true,
         contents: data,
       });
       vscode.workspace.applyEdit(wsedits);
+
+      vscode.window.showInformationMessage(
+        "File at" + join(process.cwd(), "boilerplace")
+      );
+      /*
+      fs.writeFile(
+        join(process.cwd(), "boilerplace"),
+        JSON.stringify(initFile),
+        (err) => {
+          vscode.window.showErrorMessage("Something went wrong");
+          (err);
+        }
+      );*/
     } else {
       vscode.window.showErrorMessage("No workspace found");
     }

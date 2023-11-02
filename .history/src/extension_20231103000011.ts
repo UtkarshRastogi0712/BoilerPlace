@@ -3,8 +3,6 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import { error } from "console";
-import { join } from "path";
-import { TextEncoder } from "util";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -55,8 +53,10 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   let init = vscode.commands.registerCommand("boilerplace.init", async () => {
-    const initFile: string =
-      '{"origin" : "app origin path", "elements" : ["entities"]}';
+    const initFile = {
+      origin: "app origin path",
+      elements: ["models"],
+    };
     const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
     let origin: vscode.Uri;
 
@@ -64,15 +64,17 @@ export function activate(context: vscode.ExtensionContext) {
       origin = vscode.Uri.file(
         vscode.workspace.workspaceFolders[0].uri.fsPath + "/boilerplace.json"
       );
-
-      const enc: TextEncoder = new TextEncoder();
-      const data: Uint8Array = enc.encode(initFile);
-
-      wsedits.createFile(origin, {
-        ignoreIfExists: true,
-        contents: data,
-      });
+      vscode.window.showInformationMessage(origin.toString());
+      wsedits.createFile(origin, { overwrite: true });
       vscode.workspace.applyEdit(wsedits);
+      fs.writeFile(
+        vscode.Uri.joinPath(origin, "/boilerplace.json").toString(),
+        JSON.stringify(initFile),
+        (err) => {
+          vscode.window.showErrorMessage("Something went wrong");
+          console.error(err);
+        }
+      );
     } else {
       vscode.window.showErrorMessage("No workspace found");
     }

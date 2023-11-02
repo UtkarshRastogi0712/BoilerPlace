@@ -1,10 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import * as fs from "fs";
-import { error } from "console";
-import { join } from "path";
-import { TextEncoder } from "util";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -55,30 +51,21 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   let init = vscode.commands.registerCommand("boilerplace.init", async () => {
-    const initFile: string =
-      '{"origin" : "app origin path", "elements" : ["entities"]}';
-    const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
-    let origin: vscode.Uri;
-
+    const wsedits = new vscode.WorkspaceEdit();
+    const origin: vscode.Uri | null = null;
     if (vscode.workspace.workspaceFolders !== undefined) {
-      origin = vscode.Uri.file(
-        vscode.workspace.workspaceFolders[0].uri.fsPath + "/boilerplace.json"
+      const origin = vscode.Uri.parse(
+        vscode.workspace.workspaceFolders[0].uri.path
       );
-
-      const enc: TextEncoder = new TextEncoder();
-      const data: Uint8Array = enc.encode(initFile);
-
-      wsedits.createFile(origin, {
-        ignoreIfExists: true,
-        contents: data,
-      });
-      vscode.workspace.applyEdit(wsedits);
+      wsedits.createFile(vscode.Uri.parse(origin + "/boilerplace.json"));
     } else {
       vscode.window.showErrorMessage("No workspace found");
     }
+    vscode.workspace.applyEdit(wsedits);
+    vscode.workspace.fs.writeFile();
   });
 
-  context.subscriptions.push(disposable, readDirectory, init);
+  context.subscriptions.push(disposable, readDirectory);
 }
 
 // This method is called when your extension is deactivated

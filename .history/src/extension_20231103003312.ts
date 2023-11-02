@@ -69,7 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
       const data: Uint8Array = enc.encode(initFile);
 
       wsedits.createFile(origin, {
-        ignoreIfExists: true,
+        overwrite: true,
         contents: data,
       });
       vscode.workspace.applyEdit(wsedits);
