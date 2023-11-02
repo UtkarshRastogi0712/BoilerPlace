@@ -56,7 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
       const origin = vscode.Uri.parse(
         vscode.workspace.workspaceFolders[0].uri.path
       );
-      wsedits.createFile(vscode.Uri.parse(origin + "/boilerplace.json"));
+      wsedits.createFile(vscode.Uri.parse(origin + "/test.txt"));
     } else {
       vscode.window.showErrorMessage("No workspace found");
     }

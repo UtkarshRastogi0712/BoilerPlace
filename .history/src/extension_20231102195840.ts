@@ -52,15 +52,14 @@ export function activate(context: vscode.ExtensionContext) {
 
   let init = vscode.commands.registerCommand("boilerplace.init", async () => {
     const wsedits = new vscode.WorkspaceEdit();
-    if (vscode.workspace.workspaceFolders !== undefined) {
-      const origin = vscode.Uri.parse(
-        vscode.workspace.workspaceFolders[0].uri.path
-      );
-      wsedits.createFile(vscode.Uri.parse(origin + "/boilerplace.json"));
+    const workspacePath: string =
+      vscode.workspace.workspaceFolders[0]?.uri.path;
+    if (workspacePath !== undefined) {
+      const origin = vscode.Uri.parse(workspacePath);
+      wsedits.createFile(vscode.Uri.parse(origin + "/test.txt"));
     } else {
       vscode.window.showErrorMessage("No workspace found");
     }
-    vscode.workspace.applyEdit(wsedits);
   });
   context.subscriptions.push(disposable, readDirectory);
 }
