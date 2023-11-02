@@ -64,10 +64,10 @@ export function activate(context: vscode.ExtensionContext) {
   let initCode = vscode.commands.registerCommand(
     "boilerplace.initCode",
     async () => {
-      const varname = await vscode.window.showInputBox({
+      const textQuery = await vscode.window.showInputBox({
         placeHolder: "Text query",
         prompt: "Enter text",
-        value: "Variable Name",
+        value: selectedText,
       });
 
       const initCode: string = `const ${varname} = () => {

@@ -64,16 +64,10 @@ export function activate(context: vscode.ExtensionContext) {
   let initCode = vscode.commands.registerCommand(
     "boilerplace.initCode",
     async () => {
-      const varname = await vscode.window.showInputBox({
-        placeHolder: "Text query",
-        prompt: "Enter text",
-        value: "Variable Name",
-      });
-
-      const initCode: string = `const ${varname} = () => {
+      const initFile: string = `const hello = () => {
         console.log("Hello World");
       }
-      ${varname}()`;
+      hello()`;
       const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
       let origin: vscode.Uri;
 
@@ -83,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
         );
 
         const enc: TextEncoder = new TextEncoder();
-        const data: Uint8Array = enc.encode(initCode);
+        const data: Uint8Array = enc.encode(initFile);
 
         wsedits.createFile(origin, {
           ignoreIfExists: true,
@@ -96,7 +90,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(disposable, init, initCode);
+  context.subscriptions.push(disposable, init);
 }
 
 // This method is called when your extension is deactivated

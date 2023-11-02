@@ -64,16 +64,10 @@ export function activate(context: vscode.ExtensionContext) {
   let initCode = vscode.commands.registerCommand(
     "boilerplace.initCode",
     async () => {
-      const varname = await vscode.window.showInputBox({
-        placeHolder: "Text query",
-        prompt: "Enter text",
-        value: "Variable Name",
-      });
-
-      const initCode: string = `const ${varname} = () => {
+      const initCode: string = `const hello = () => {
         console.log("Hello World");
       }
-      ${varname}()`;
+      hello()`;
       const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
       let origin: vscode.Uri;
 

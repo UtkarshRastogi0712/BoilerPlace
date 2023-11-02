@@ -61,42 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  let initCode = vscode.commands.registerCommand(
-    "boilerplace.initCode",
-    async () => {
-      const varname = await vscode.window.showInputBox({
-        placeHolder: "Text query",
-        prompt: "Enter text",
-        value: "Variable Name",
-      });
-
-      const initCode: string = `const ${varname} = () => {
-        console.log("Hello World");
-      }
-      ${varname}()`;
-      const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
-      let origin: vscode.Uri;
-
-      if (vscode.workspace.workspaceFolders !== undefined) {
-        origin = vscode.Uri.file(
-          vscode.workspace.workspaceFolders[0].uri.fsPath + "/boilerapp.js"
-        );
-
-        const enc: TextEncoder = new TextEncoder();
-        const data: Uint8Array = enc.encode(initCode);
-
-        wsedits.createFile(origin, {
-          ignoreIfExists: true,
-          contents: data,
-        });
-        vscode.workspace.applyEdit(wsedits);
-      } else {
-        vscode.window.showErrorMessage("No workspace found");
-      }
-    }
-  );
-
-  context.subscriptions.push(disposable, init, initCode);
+  context.subscriptions.push(disposable, readDirectory, init);
 }
 
 // This method is called when your extension is deactivated
