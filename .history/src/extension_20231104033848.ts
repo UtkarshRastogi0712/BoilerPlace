@@ -102,7 +102,6 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showErrorMessage("No package.json found");
       } else if (packageCheck.length == 1) {
         baseDirectory = packageCheck[0];
-        console.log(baseDirectory);
       } else {
         const packageOptions: string[] = [];
         packageCheck.forEach((element) => {
@@ -115,7 +114,6 @@ export function activate(context: vscode.ExtensionContext) {
         if (selectedPackage !== undefined) {
           baseDirectory = vscode.Uri.file(selectedPackage);
         }
-        console.log(baseDirectory);
       }
     } else {
       vscode.window.showErrorMessage("Open a workspace folder to begin");

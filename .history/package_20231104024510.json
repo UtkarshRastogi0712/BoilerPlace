@@ -30,8 +30,8 @@
         "title": "Boilerplace old init code"
       },
       {
-        "command": "boilerplace.init",
-        "title": "Boilerplace init"
+        "command": "boilerplace.setup",
+        "title": "Boilerplace setup"
       }
     ],
     "snippets": [

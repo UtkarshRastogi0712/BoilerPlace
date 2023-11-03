@@ -115,7 +115,6 @@ export function activate(context: vscode.ExtensionContext) {
         if (selectedPackage !== undefined) {
           baseDirectory = vscode.Uri.file(selectedPackage);
         }
-        console.log(baseDirectory);
       }
     } else {
       vscode.window.showErrorMessage("Open a workspace folder to begin");

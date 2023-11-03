@@ -5,7 +5,6 @@ export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
 
   let origin: vscode.Uri;
-  let baseDirectory: vscode.Uri;
 
   let disposable = vscode.commands.registerCommand(
     "boilerplace.helloWorld",
@@ -95,28 +94,11 @@ export function activate(context: vscode.ExtensionContext) {
     if (vscode.workspace.workspaceFolders !== undefined) {
       origin = vscode.Uri.file(vscode.workspace.workspaceFolders[0].uri.fsPath);
       const packageCheck: vscode.Uri[] = await vscode.workspace.findFiles(
-        "**/package.json",
-        "**/node_modules/**/package.json"
+        "**/package.json"
       );
-      if (packageCheck.length == 0) {
-        vscode.window.showErrorMessage("No package.json found");
-      } else if (packageCheck.length == 1) {
-        baseDirectory = packageCheck[0];
-        console.log(baseDirectory);
-      } else {
-        const packageOptions: string[] = [];
-        packageCheck.forEach((element) => {
-          packageOptions.push(element.fsPath);
-        });
-        const selectedPackage: string | undefined =
-          await vscode.window.showQuickPick(packageOptions, {
-            placeHolder: "Select a package.json",
-          });
-        if (selectedPackage !== undefined) {
-          baseDirectory = vscode.Uri.file(selectedPackage);
-        }
-        console.log(baseDirectory);
-      }
+      console.log(
+        packageCheck.length != 0 ? packageCheck : "Couldnt find package.json"
+      );
     } else {
       vscode.window.showErrorMessage("Open a workspace folder to begin");
     }

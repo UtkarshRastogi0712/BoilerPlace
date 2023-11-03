@@ -28,11 +28,11 @@
       {
         "command": "boilerplace.oldInitCode",
         "title": "Boilerplace old init code"
-      },
+      }
       {
         "command": "boilerplace.init",
         "title": "Boilerplace init"
-      }
+      },
     ],
     "snippets": [
       {
