@@ -3,7 +3,6 @@ import { TextEncoder } from "util";
 import path = require("path");
 import { text } from "stream/consumers";
 import "./identifier.validator";
-import { identifierValidator } from "./identifier.validator";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
@@ -87,7 +86,9 @@ export function activate(context: vscode.ExtensionContext) {
         value: selectedText,
       });
 
-      if (textQuery === undefined || !identifierValidator(textQuery)) {
+      // Check for valid identifiers properly
+      // Try to run regex validators
+      if (textQuery === undefined || textQuery.includes(" ")) {
         vscode.window.showErrorMessage("Enter a valid variable name");
         return;
       }

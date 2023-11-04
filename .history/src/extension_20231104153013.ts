@@ -87,6 +87,8 @@ export function activate(context: vscode.ExtensionContext) {
         value: selectedText,
       });
 
+      // Check for valid identifiers properly
+      // Try to run regex validators
       if (textQuery === undefined || !identifierValidator(textQuery)) {
         vscode.window.showErrorMessage("Enter a valid variable name");
         return;
