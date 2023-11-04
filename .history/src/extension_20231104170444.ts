@@ -4,7 +4,6 @@ import path = require("path");
 import { text } from "stream/consumers";
 import "./identifier.validator";
 import { identifierValidator } from "./identifier.validator";
-import initFile from "./boilerplates/boilerplace.init.json";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
@@ -12,6 +11,12 @@ export function activate(context: vscode.ExtensionContext) {
   let origin: vscode.Uri;
   let baseDirectory: vscode.Uri;
   let boilerplaceInit: vscode.Uri;
+
+  const initCode = (varname: string) => {
+    return `const ${varname} = () => {
+    console.log("Hello World");
+  }`;
+  };
 
   let disposable = vscode.commands.registerCommand(
     "boilerplace.helloWorld",
@@ -75,7 +80,6 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     try {
-      /*
       let selectedText: string = "Enter the preferred variable name!";
       const textQuery: string | undefined = await vscode.window.showInputBox({
         placeHolder: "Text query",
@@ -86,21 +90,18 @@ export function activate(context: vscode.ExtensionContext) {
       if (textQuery === undefined || !identifierValidator(textQuery)) {
         vscode.window.showErrorMessage("Enter a valid variable name");
         return;
-      }*/
+      }
 
-      boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.json");
+      boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.js");
       const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
       const enc: TextEncoder = new TextEncoder();
-      const data: Uint8Array = enc.encode(JSON.stringify(initFile));
+      const data: Uint8Array = enc.encode(initCode(textQuery));
 
       wsedits.createFile(boilerplaceInit, {
-        ignoreIfExists: true,
+        overwrite: true,
         contents: data,
       });
       vscode.workspace.applyEdit(wsedits);
-      vscode.window.showInformationMessage(
-        "boilerplace.json ready to be configured"
-      );
     } catch (err) {
       vscode.window.showErrorMessage("Something went wrong. Try Again.");
     }

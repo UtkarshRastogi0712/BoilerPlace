@@ -94,13 +94,10 @@ export function activate(context: vscode.ExtensionContext) {
       const data: Uint8Array = enc.encode(JSON.stringify(initFile));
 
       wsedits.createFile(boilerplaceInit, {
-        ignoreIfExists: true,
+        overwrite: true,
         contents: data,
       });
       vscode.workspace.applyEdit(wsedits);
-      vscode.window.showInformationMessage(
-        "boilerplace.json ready to be configured"
-      );
     } catch (err) {
       vscode.window.showErrorMessage("Something went wrong. Try Again.");
     }

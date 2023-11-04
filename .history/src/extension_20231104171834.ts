@@ -75,7 +75,6 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     try {
-      /*
       let selectedText: string = "Enter the preferred variable name!";
       const textQuery: string | undefined = await vscode.window.showInputBox({
         placeHolder: "Text query",
@@ -86,21 +85,18 @@ export function activate(context: vscode.ExtensionContext) {
       if (textQuery === undefined || !identifierValidator(textQuery)) {
         vscode.window.showErrorMessage("Enter a valid variable name");
         return;
-      }*/
+      }
 
-      boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.json");
+      boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.js");
       const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
       const enc: TextEncoder = new TextEncoder();
-      const data: Uint8Array = enc.encode(JSON.stringify(initFile));
+      const data: Uint8Array = enc.encode(initCode(textQuery));
 
       wsedits.createFile(boilerplaceInit, {
-        ignoreIfExists: true,
+        overwrite: true,
         contents: data,
       });
       vscode.workspace.applyEdit(wsedits);
-      vscode.window.showInformationMessage(
-        "boilerplace.json ready to be configured"
-      );
     } catch (err) {
       vscode.window.showErrorMessage("Something went wrong. Try Again.");
     }

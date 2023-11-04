@@ -88,19 +88,16 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }*/
 
-      boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.json");
+      boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.js");
       const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
       const enc: TextEncoder = new TextEncoder();
-      const data: Uint8Array = enc.encode(JSON.stringify(initFile));
+      const data: Uint8Array = enc.encode();
 
       wsedits.createFile(boilerplaceInit, {
-        ignoreIfExists: true,
+        overwrite: true,
         contents: data,
       });
       vscode.workspace.applyEdit(wsedits);
-      vscode.window.showInformationMessage(
-        "boilerplace.json ready to be configured"
-      );
     } catch (err) {
       vscode.window.showErrorMessage("Something went wrong. Try Again.");
     }
