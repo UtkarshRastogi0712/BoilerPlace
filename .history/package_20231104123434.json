@@ -15,7 +15,11 @@
     "commands": [
       {
         "command": "boilerplace.helloWorld",
-        "title": "Boilerplace Hello World"
+        "title": "Hello World"
+      },
+      {
+        "command": "boilerplace.readDirectory",
+        "title": "Read Directory"
       },
       {
         "command": "boilerplace.init",

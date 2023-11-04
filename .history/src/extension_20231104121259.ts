@@ -38,6 +38,70 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  let oldInit = vscode.commands.registerCommand(
+    "boilerplace.oldInit",
+    async () => {
+      const initFile: string =
+        '{"origin" : "app origin path", "elements" : ["entities"]}';
+      const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
+      let oldOrigin: vscode.Uri;
+
+      if (vscode.workspace.workspaceFolders !== undefined) {
+        oldOrigin = vscode.Uri.file(
+          vscode.workspace.workspaceFolders[0].uri.fsPath + "/boilerplace.json"
+        );
+
+        const enc: TextEncoder = new TextEncoder();
+        const data: Uint8Array = enc.encode(initFile);
+
+        wsedits.createFile(oldOrigin, {
+          ignoreIfExists: true,
+          contents: data,
+        });
+        vscode.workspace.applyEdit(wsedits);
+      } else {
+        vscode.window.showErrorMessage("No workspace found");
+      }
+    }
+  );
+
+  let oldInitCode = vscode.commands.registerCommand(
+    "boilerplace.oldInitCode",
+    async () => {
+      const varname = await vscode.window.showInputBox({
+        placeHolder: "Text query",
+        prompt: "Enter text",
+        value: "Variable Name",
+      });
+
+      const initCode: string = `const ${varname} = () => {
+        console.log("Hello World");
+      }
+      ${varname}()`;
+      const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
+      let oldOrigin: vscode.Uri;
+
+      if (vscode.workspace.workspaceFolders !== undefined) {
+        oldOrigin = vscode.Uri.file(
+          vscode.workspace.workspaceFolders[0].uri.fsPath + "/boilerapp.js"
+        );
+
+        const enc: TextEncoder = new TextEncoder();
+        const data: Uint8Array = enc.encode(initCode);
+
+        wsedits.createFile(oldOrigin, {
+          ignoreIfExists: true,
+          contents: data,
+        });
+        vscode.workspace.applyEdit(wsedits);
+      } else {
+        vscode.window.showErrorMessage(
+          "No workspace found. Open a workspace to continue."
+        );
+      }
+    }
+  );
+
   const init = vscode.commands.registerCommand("boilerplace.init", async () => {
     if (vscode.workspace.workspaceFolders !== undefined) {
       origin = vscode.Uri.file(vscode.workspace.workspaceFolders[0].uri.fsPath);
@@ -79,23 +143,16 @@ export function activate(context: vscode.ExtensionContext) {
 
     try {
       let selectedText: string = "Enter the preferred variable name!";
-      const textQuery: string | undefined = await vscode.window.showInputBox({
+      const textQuery = await vscode.window.showInputBox({
         placeHolder: "Text query",
         prompt: "Enter text",
         value: selectedText,
       });
 
-      // Check for valid identifiers properly
-      // Try to run regex validators
-      if (textQuery === undefined || textQuery.includes(" ")) {
-        vscode.window.showErrorMessage("Enter a valid variable name");
-        return;
-      }
-
-      boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.js");
+      boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.json");
       const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
       const enc: TextEncoder = new TextEncoder();
-      const data: Uint8Array = enc.encode(initCode(textQuery));
+      const data: Uint8Array = enc.encode(initCode(selectedText));
 
       wsedits.createFile(boilerplaceInit, {
         overwrite: true,
@@ -107,7 +164,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  context.subscriptions.push(disposable, init);
+  context.subscriptions.push(disposable, oldInit, oldInitCode, init);
 }
 
 // This method is called when your extension is deactivated
