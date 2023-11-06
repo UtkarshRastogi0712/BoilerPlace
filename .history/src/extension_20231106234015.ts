@@ -122,14 +122,14 @@ export function activate(context: vscode.ExtensionContext) {
         const boilerplaceCheck: vscode.Uri[] = await vscode.workspace.findFiles(
           "**/boilerplace.json"
         );
-        if (boilerplaceCheck.length == 0) {
+        if(boilerplaceCheck.length == 0){
           vscode.window.showErrorMessage(
             "Couldnt find boilerpalce.json. Run boilerpalce init first"
           );
           return;
-        } else if (boilerplaceCheck.length == 1) {
+        } else if(boilerplaceCheck.length == 1){
           boilerplaceInit = boilerplaceCheck[0];
-        } else {
+        } else{
           const boilerplaceOptions: string[] = [];
           boilerplaceCheck.forEach((element) => {
             boilerplaceOptions.push(element.fsPath);
@@ -148,12 +148,12 @@ export function activate(context: vscode.ExtensionContext) {
           }
         }
       }
-
       try {
-        vscode.window.showInformationMessage("Validate scehma now!");
-      } catch (err) {
-        console.error(err);
-      }
+        const boilerplaceData: string = (
+          await vscode.workspace.fs.readFile(boilerplaceInit)
+        ).toString();
+        const boilerplaceJson: JSON = JSON.parse(boilerplaceData);
+        Joi.validate
     }
   );
 

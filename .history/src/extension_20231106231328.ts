@@ -5,14 +5,13 @@ import { text } from "stream/consumers";
 import "./identifier.validator";
 import { identifierValidator } from "./identifier.validator";
 import initFile from "./boilerplates/boilerplace.init.json";
-import * as Joi from "joi";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
 
   let origin: vscode.Uri | null = null;
-  let baseDirectory: vscode.Uri | null = null;
-  let boilerplaceInit: vscode.Uri | null = null;
+  let baseDirectory: vscode.Uri;
+  let boilerplaceInit: vscode.Uri;
 
   let disposable = vscode.commands.registerCommand(
     "boilerplace.helloWorld",
@@ -109,52 +108,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const create = vscode.commands.registerCommand(
     "boilerplace.create",
-    async () => {
-      if (!origin) {
-        vscode.window.showErrorMessage("Open a workspace folder to begin.");
-        return;
-      } else if (!baseDirectory) {
-        vscode.window.showErrorMessage(
-          "No package.json found. Initialize node project to start."
-        );
-        return;
-      } else {
-        const boilerplaceCheck: vscode.Uri[] = await vscode.workspace.findFiles(
-          "**/boilerplace.json"
-        );
-        if (boilerplaceCheck.length == 0) {
-          vscode.window.showErrorMessage(
-            "Couldnt find boilerpalce.json. Run boilerpalce init first"
-          );
-          return;
-        } else if (boilerplaceCheck.length == 1) {
-          boilerplaceInit = boilerplaceCheck[0];
-        } else {
-          const boilerplaceOptions: string[] = [];
-          boilerplaceCheck.forEach((element) => {
-            boilerplaceOptions.push(element.fsPath);
-          });
-          const selectedBoilerplace: string | undefined =
-            await vscode.window.showQuickPick(boilerplaceOptions, {
-              placeHolder: "Select a boilerplace.json",
-            });
-          if (selectedBoilerplace !== undefined) {
-            boilerplaceInit = vscode.Uri.file(selectedBoilerplace);
-          } else {
-            vscode.window.showErrorMessage(
-              "No boilerplace.json found. Run boilerplace init first."
-            );
-            return;
-          }
-        }
-      }
-
-      try {
-        vscode.window.showInformationMessage("Validate scehma now!");
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    () => {}
   );
 
   context.subscriptions.push(disposable, init);

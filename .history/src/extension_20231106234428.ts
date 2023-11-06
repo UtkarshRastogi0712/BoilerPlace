@@ -150,7 +150,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       try {
-        vscode.window.showInformationMessage("Validate scehma now!");
+        console.log("Validate scehma now!");
       } catch (err) {
         console.error(err);
       }
