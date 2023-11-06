@@ -5,7 +5,6 @@ import { text } from "stream/consumers";
 import "./identifier.validator";
 import { identifierValidator } from "./identifier.validator";
 import initFile from "./boilerplates/boilerplace.init.json";
-import appFile from "./boilerplates/boilerplace.app.js";
 import schema from "./boilerplace.schema";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -152,7 +151,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       try {
-        let boilerpalceData: any = await vscode.workspace.fs
+        let boilerpalceData: JSON = await vscode.workspace.fs
           .readFile(boilerplaceInit)
           .then((data) => {
             return JSON.parse(data.toString());
@@ -166,20 +165,23 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         } else {
           //create app.js file;
+
           entryPoint = vscode.Uri.joinPath(
-            baseDirectory,
-            boilerpalceData.entryPoint
+            origin,
+            boilerpalceData["entryPoint"]
           );
           const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
           const enc: TextEncoder = new TextEncoder();
-          const app = enc.encode(appFile());
+          const data: Uint8Array = enc.encode(JSON.stringify(initFile));
 
-          wsedits.createFile(entryPoint, {
+          wsedits.createFile(boilerplaceInit, {
             ignoreIfExists: true,
-            contents: app,
+            contents: data,
           });
           vscode.workspace.applyEdit(wsedits);
-          vscode.window.showInformationMessage("app.js ready to be configured");
+          vscode.window.showInformationMessage(
+            "boilerplace.json ready to be configured"
+          );
         }
       } catch (err) {
         console.error(err);

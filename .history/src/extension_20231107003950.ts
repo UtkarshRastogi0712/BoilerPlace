@@ -5,7 +5,6 @@ import { text } from "stream/consumers";
 import "./identifier.validator";
 import { identifierValidator } from "./identifier.validator";
 import initFile from "./boilerplates/boilerplace.init.json";
-import appFile from "./boilerplates/boilerplace.app.js";
 import schema from "./boilerplace.schema";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -152,7 +151,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       try {
-        let boilerpalceData: any = await vscode.workspace.fs
+        let boilerpalceData: JSON = await vscode.workspace.fs
           .readFile(boilerplaceInit)
           .then((data) => {
             return JSON.parse(data.toString());
@@ -165,21 +164,9 @@ export function activate(context: vscode.ExtensionContext) {
           );
           return;
         } else {
-          //create app.js file;
-          entryPoint = vscode.Uri.joinPath(
-            baseDirectory,
-            boilerpalceData.entryPoint
+          vscode.window.showInformationMessage(
+            "Valid input in boilerplace.json"
           );
-          const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
-          const enc: TextEncoder = new TextEncoder();
-          const app = enc.encode(appFile());
-
-          wsedits.createFile(entryPoint, {
-            ignoreIfExists: true,
-            contents: app,
-          });
-          vscode.workspace.applyEdit(wsedits);
-          vscode.window.showInformationMessage("app.js ready to be configured");
         }
       } catch (err) {
         console.error(err);

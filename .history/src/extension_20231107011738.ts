@@ -172,11 +172,11 @@ export function activate(context: vscode.ExtensionContext) {
           );
           const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
           const enc: TextEncoder = new TextEncoder();
-          const app = enc.encode(appFile());
+          const appFile = enc.encode(appFile());
 
           wsedits.createFile(entryPoint, {
             ignoreIfExists: true,
-            contents: app,
+            contents: appFile,
           });
           vscode.workspace.applyEdit(wsedits);
           vscode.window.showInformationMessage("app.js ready to be configured");

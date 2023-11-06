@@ -5,8 +5,7 @@ import { text } from "stream/consumers";
 import "./identifier.validator";
 import { identifierValidator } from "./identifier.validator";
 import initFile from "./boilerplates/boilerplace.init.json";
-import appFile from "./boilerplates/boilerplace.app.js";
-import schema from "./boilerplace.schema";
+import * as Joi from "joi";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
@@ -14,7 +13,6 @@ export function activate(context: vscode.ExtensionContext) {
   let origin: vscode.Uri | null = null;
   let baseDirectory: vscode.Uri | null = null;
   let boilerplaceInit: vscode.Uri | null = null;
-  let entryPoint: vscode.Uri | null = null;
 
   let disposable = vscode.commands.registerCommand(
     "boilerplace.helloWorld",
@@ -152,35 +150,11 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       try {
-        let boilerpalceData: any = await vscode.workspace.fs
+        let boilerpalceData: JSON = await vscode.workspace.fs
           .readFile(boilerplaceInit)
           .then((data) => {
             return JSON.parse(data.toString());
           });
-        vscode.window.showInformationMessage(JSON.stringify(boilerpalceData));
-        const validationResults = schema.validate(boilerpalceData);
-        if (validationResults.error) {
-          vscode.window.showErrorMessage(
-            "Invalid input in boilerplace.json.Does not match expected schema."
-          );
-          return;
-        } else {
-          //create app.js file;
-          entryPoint = vscode.Uri.joinPath(
-            baseDirectory,
-            boilerpalceData.entryPoint
-          );
-          const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
-          const enc: TextEncoder = new TextEncoder();
-          const app = enc.encode(appFile());
-
-          wsedits.createFile(entryPoint, {
-            ignoreIfExists: true,
-            contents: app,
-          });
-          vscode.workspace.applyEdit(wsedits);
-          vscode.window.showInformationMessage("app.js ready to be configured");
-        }
       } catch (err) {
         console.error(err);
       }

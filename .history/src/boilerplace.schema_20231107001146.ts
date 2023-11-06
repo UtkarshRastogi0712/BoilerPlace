@@ -5,7 +5,7 @@ const schema = Joi.object({
     .pattern(/^[a-zA-Z][a-zA-Z0-9-_.]*.js$/)
     .required()
     .max(255),
-  entities: Joi.array().items(
+  entitties: Joi.array().items(
     Joi.object({
       name: Joi.string().alphanum().required(),
     })

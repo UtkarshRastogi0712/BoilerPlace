@@ -5,7 +5,6 @@ import { text } from "stream/consumers";
 import "./identifier.validator";
 import { identifierValidator } from "./identifier.validator";
 import initFile from "./boilerplates/boilerplace.init.json";
-import appFile from "./boilerplates/boilerplace.app.js";
 import schema from "./boilerplace.schema";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -172,14 +171,20 @@ export function activate(context: vscode.ExtensionContext) {
           );
           const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
           const enc: TextEncoder = new TextEncoder();
-          const app = enc.encode(appFile());
+          const appFile = await vscode.workspace.fs
+            .readFile(vscode.Uri.file("./boilerlates/boilerplace.app.js"))
+            .then((data) => {
+              return JSON.parse(data.toString());
+            });
 
           wsedits.createFile(entryPoint, {
             ignoreIfExists: true,
-            contents: app,
+            contents: appFile,
           });
           vscode.workspace.applyEdit(wsedits);
-          vscode.window.showInformationMessage("app.js ready to be configured");
+          vscode.window.showInformationMessage(
+            "boilerplace.json ready to be configured"
+          );
         }
       } catch (err) {
         console.error(err);

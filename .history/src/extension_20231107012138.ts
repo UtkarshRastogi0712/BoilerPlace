@@ -7,6 +7,7 @@ import { identifierValidator } from "./identifier.validator";
 import initFile from "./boilerplates/boilerplace.init.json";
 import appFile from "./boilerplates/boilerplace.app.js";
 import schema from "./boilerplace.schema";
+import appFile from "./boilerplates/boilerplace.app.js";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');

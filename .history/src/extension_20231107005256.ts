@@ -172,14 +172,16 @@ export function activate(context: vscode.ExtensionContext) {
           );
           const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
           const enc: TextEncoder = new TextEncoder();
-          const app = enc.encode(appFile());
+          const data: Uint8Array = enc.encode(JSON.stringify(initFile));
 
-          wsedits.createFile(entryPoint, {
+          wsedits.createFile(boilerplaceInit, {
             ignoreIfExists: true,
-            contents: app,
+            contents: data,
           });
           vscode.workspace.applyEdit(wsedits);
-          vscode.window.showInformationMessage("app.js ready to be configured");
+          vscode.window.showInformationMessage(
+            "boilerplace.json ready to be configured"
+          );
         }
       } catch (err) {
         console.error(err);
