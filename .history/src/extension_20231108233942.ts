@@ -185,8 +185,6 @@ export function activate(context: vscode.ExtensionContext) {
           });
           vscode.workspace.applyEdit(wsedits);
           vscode.window.showInformationMessage("app.js ready to be configured");
-
-          ///
           if (vscode.workspace.workspaceFolders !== undefined) {
             vscode.workspace.fs
               .readDirectory(vscode.workspace.workspaceFolders[0].uri)
@@ -196,7 +194,6 @@ export function activate(context: vscode.ExtensionContext) {
                 });
               });
           }
-          ///
         }
       } catch (err) {
         console.error(err);
