@@ -7,15 +7,27 @@ import { identifierValidator } from "./identifier.validator";
 import initFile from "./boilerplates/boilerplace.init.json";
 import appFile from "./boilerplates/boilerplace.app.js";
 import schema from "./boilerplace.schema";
-import workspaceCheck from "./helpers/startup.utilities";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
 
-  let origin: vscode.Uri | null = workspaceCheck();
+  let origin: vscode.Uri | null = workspaceCheck() ? workspaceCheck : null;
   let baseDirectory: vscode.Uri | null = null;
   let boilerplaceInit: vscode.Uri | null = null;
   let entryPoint: vscode.Uri | null = null;
+
+  let workspaceCheck = (): vscode.Uri | null => {
+    if (vscode.workspace.workspaceFolders !== undefined) {
+      origin = vscode.Uri.file(vscode.workspace.workspaceFolders[0].uri.fsPath);
+      vscode.window.showInformationMessage("Workspace opened.");
+      return origin;
+    } else {
+      vscode.window.showErrorMessage("Open a workspace folder to begin.");
+      return null;
+    }
+  };
+
+  workspaceCheck();
 
   let disposable = vscode.commands.registerCommand(
     "boilerplace.helloWorld",

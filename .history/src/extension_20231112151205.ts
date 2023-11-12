@@ -17,6 +17,8 @@ export function activate(context: vscode.ExtensionContext) {
   let boilerplaceInit: vscode.Uri | null = null;
   let entryPoint: vscode.Uri | null = null;
 
+  workspaceCheck();
+
   let disposable = vscode.commands.registerCommand(
     "boilerplace.helloWorld",
     async () => {

@@ -12,10 +12,12 @@ import workspaceCheck from "./helpers/startup.utilities";
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
 
-  let origin: vscode.Uri | null = workspaceCheck();
+  let origin: vscode.Uri | null = workspaceCheck() ? workspaceCheck : null;
   let baseDirectory: vscode.Uri | null = null;
   let boilerplaceInit: vscode.Uri | null = null;
   let entryPoint: vscode.Uri | null = null;
+
+  workspaceCheck();
 
   let disposable = vscode.commands.registerCommand(
     "boilerplace.helloWorld",
