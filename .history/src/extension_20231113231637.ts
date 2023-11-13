@@ -25,6 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
     .catch(() => {
       baseDirectory = null;
+      vscode.window.showErrorMessage("Something went wrong. Try Again.");
       return null;
     });
   let boilerplaceInit: vscode.Uri | null = null;

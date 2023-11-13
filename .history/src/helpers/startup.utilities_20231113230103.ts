@@ -15,7 +15,7 @@ let workspaceCheck = (): vscode.Uri | null => {
 };
 
 let baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
-  async (resolve, reject) => {
+  (resolve, reject) => {
     const packageCheck: vscode.Uri[] = await vscode.workspace.findFiles(
       "**/package.json",
       "**/node_modules/**/package.json"

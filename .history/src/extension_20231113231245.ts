@@ -21,11 +21,9 @@ export function activate(context: vscode.ExtensionContext) {
     .then((value) => {
       baseDirectory = value;
       vscode.window.showInformationMessage("Base directory found");
-      return value;
     })
     .catch(() => {
       baseDirectory = null;
-      return null;
     });
   let boilerplaceInit: vscode.Uri | null = null;
   let entryPoint: vscode.Uri | null = null;
@@ -53,38 +51,8 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const init = vscode.commands.registerCommand("boilerplace.init", async () => {
-    if (origin) {
-      const packageCheck: vscode.Uri[] = await vscode.workspace.findFiles(
-        "**/package.json",
-        "**/node_modules/**/package.json"
-      );
-      if (packageCheck.length == 0) {
-        vscode.window.showErrorMessage(
-          "No package.json found. Initialize node project to start."
-        );
-        return;
-      } else if (packageCheck.length == 1) {
-        baseDirectory = vscode.Uri.file(path.dirname(packageCheck[0].fsPath));
-        console.log(baseDirectory);
-      } else {
-        const packageOptions: string[] = [];
-        packageCheck.forEach((element) => {
-          packageOptions.push(path.dirname(element.fsPath));
-        });
-        const selectedPackage: string | undefined =
-          await vscode.window.showQuickPick(packageOptions, {
-            placeHolder: "Select a package.json",
-          });
-        if (selectedPackage !== undefined) {
-          baseDirectory = vscode.Uri.file(selectedPackage);
-        } else {
-          vscode.window.showErrorMessage(
-            "No package.json found. Initialize node project to start."
-          );
-          return;
-        }
-        console.log(baseDirectory);
-      }
+    if (vscode.workspace.workspaceFolders !== undefined) {
+      baseDirectoryCheck;
     } else {
       vscode.window.showErrorMessage("Open a workspace folder to begin.");
       return;

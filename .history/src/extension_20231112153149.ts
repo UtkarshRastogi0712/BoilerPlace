@@ -16,16 +16,12 @@ export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
 
   let origin: vscode.Uri | null = workspaceCheck();
-  let baseDirectory: vscode.Uri | null;
-  baseDirectoryCheck
+  let baseDirectory: vscode.Uri | null = baseDirectoryCheck()
     .then((value) => {
-      baseDirectory = value;
-      vscode.window.showInformationMessage("Base directory found");
       return value;
     })
-    .catch(() => {
-      baseDirectory = null;
-      return null;
+    .catch((value) => {
+      return value;
     });
   let boilerplaceInit: vscode.Uri | null = null;
   let entryPoint: vscode.Uri | null = null;
@@ -53,7 +49,8 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const init = vscode.commands.registerCommand("boilerplace.init", async () => {
-    if (origin) {
+    if (vscode.workspace.workspaceFolders !== undefined) {
+      origin = vscode.Uri.file(vscode.workspace.workspaceFolders[0].uri.fsPath);
       const packageCheck: vscode.Uri[] = await vscode.workspace.findFiles(
         "**/package.json",
         "**/node_modules/**/package.json"

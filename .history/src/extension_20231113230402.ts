@@ -20,7 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
   baseDirectoryCheck
     .then((value) => {
       baseDirectory = value;
-      vscode.window.showInformationMessage("Base directory found");
       return value;
     })
     .catch(() => {
@@ -29,6 +28,8 @@ export function activate(context: vscode.ExtensionContext) {
     });
   let boilerplaceInit: vscode.Uri | null = null;
   let entryPoint: vscode.Uri | null = null;
+
+  vscode.window.showInformationMessage(typeof baseD);
 
   let disposable = vscode.commands.registerCommand(
     "boilerplace.helloWorld",
@@ -53,7 +54,8 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const init = vscode.commands.registerCommand("boilerplace.init", async () => {
-    if (origin) {
+    if (vscode.workspace.workspaceFolders !== undefined) {
+      origin = vscode.Uri.file(vscode.workspace.workspaceFolders[0].uri.fsPath);
       const packageCheck: vscode.Uri[] = await vscode.workspace.findFiles(
         "**/package.json",
         "**/node_modules/**/package.json"
