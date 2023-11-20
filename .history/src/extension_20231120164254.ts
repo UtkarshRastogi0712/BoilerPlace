@@ -10,7 +10,6 @@ import schema from "./boilerplace.schema";
 import {
   workspaceCheck,
   baseDirectoryCheck,
-  boilerpalceInitCheck,
 } from "./helpers/startup.utilities";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -26,13 +25,6 @@ export function activate(context: vscode.ExtensionContext) {
       baseDirectory = null;
     });
   let boilerplaceInit: vscode.Uri | null = null;
-  boilerpalceInitCheck
-    .then((value) => {
-      boilerplaceInit = value;
-    })
-    .catch(() => {
-      boilerplaceInit = null;
-    });
   let entryPoint: vscode.Uri | null = null;
 
   let disposable = vscode.commands.registerCommand(

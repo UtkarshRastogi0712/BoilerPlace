@@ -10,7 +10,6 @@ import schema from "./boilerplace.schema";
 import {
   workspaceCheck,
   baseDirectoryCheck,
-  boilerpalceInitCheck,
 } from "./helpers/startup.utilities";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -21,18 +20,14 @@ export function activate(context: vscode.ExtensionContext) {
   baseDirectoryCheck
     .then((value) => {
       baseDirectory = value;
+      vscode.window.showInformationMessage("Base directory found");
+      return value;
     })
     .catch(() => {
       baseDirectory = null;
+      return null;
     });
   let boilerplaceInit: vscode.Uri | null = null;
-  boilerpalceInitCheck
-    .then((value) => {
-      boilerplaceInit = value;
-    })
-    .catch(() => {
-      boilerplaceInit = null;
-    });
   let entryPoint: vscode.Uri | null = null;
 
   let disposable = vscode.commands.registerCommand(
@@ -58,21 +53,27 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const init = vscode.commands.registerCommand("boilerplace.init", () => {
-    if (!origin) {
+    if (!origin || origin === null) {
       async () => {
         origin = await workspaceCheck();
+        return;
       };
-      return;
-    }
-
-    if (!baseDirectory) {
-      async () => {
-        baseDirectory = await baseDirectoryCheck;
-      };
-      return;
     }
 
     try {
+      /*
+      let selectedText: string = "Enter the preferred variable name!";
+      const textQuery: string | undefined = await vscode.window.showInputBox({
+        placeHolder: "Text query",
+        prompt: "Enter text",
+        value: selectedText,
+      });
+
+      if (textQuery === undefined || !identifierValidator(textQuery)) {
+        vscode.window.showErrorMessage("Enter a valid variable name");
+        return;
+      }*/
+
       boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.json");
       const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
       const enc: TextEncoder = new TextEncoder();

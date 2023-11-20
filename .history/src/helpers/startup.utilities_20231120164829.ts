@@ -89,4 +89,4 @@ const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
   }
 );
 
-export { workspaceCheck, baseDirectoryCheck, boilerpalceInitCheck };
+export { workspaceCheck, baseDirectoryCheck };

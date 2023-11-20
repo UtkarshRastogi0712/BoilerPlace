@@ -26,13 +26,6 @@ export function activate(context: vscode.ExtensionContext) {
       baseDirectory = null;
     });
   let boilerplaceInit: vscode.Uri | null = null;
-  boilerpalceInitCheck
-    .then((value) => {
-      boilerplaceInit = value;
-    })
-    .catch(() => {
-      boilerplaceInit = null;
-    });
   let entryPoint: vscode.Uri | null = null;
 
   let disposable = vscode.commands.registerCommand(

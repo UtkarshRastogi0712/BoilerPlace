@@ -14,7 +14,7 @@ let workspaceCheck = (): vscode.Uri | null => {
   }
 };
 
-const baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
+let baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
   async (resolve, reject) => {
     const packageCheck: vscode.Uri[] = await vscode.workspace.findFiles(
       "**/package.json",
@@ -53,7 +53,7 @@ const baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
   }
 );
 
-const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
+let boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
   async (resolve, reject) => {
     let boilerplaceInit: vscode.Uri | null;
     const boilerplaceCheck: vscode.Uri[] = await vscode.workspace.findFiles(
@@ -66,7 +66,6 @@ const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
       reject(null);
     } else if (boilerplaceCheck.length == 1) {
       boilerplaceInit = boilerplaceCheck[0];
-      resolve(boilerplaceInit);
     } else {
       const boilerplaceOptions: string[] = [];
       boilerplaceCheck.forEach((element) => {
@@ -78,15 +77,14 @@ const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
         });
       if (selectedBoilerplace !== undefined) {
         boilerplaceInit = vscode.Uri.file(selectedBoilerplace);
-        resolve(boilerplaceInit);
       } else {
         vscode.window.showErrorMessage(
           "No boilerplace.json found. Run boilerplace init first."
         );
-        reject(null);
+        return;
       }
     }
   }
 );
 
-export { workspaceCheck, baseDirectoryCheck, boilerpalceInitCheck };
+export { workspaceCheck, baseDirectoryCheck };

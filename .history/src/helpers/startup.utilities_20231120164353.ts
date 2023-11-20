@@ -14,7 +14,7 @@ let workspaceCheck = (): vscode.Uri | null => {
   }
 };
 
-const baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
+let baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
   async (resolve, reject) => {
     const packageCheck: vscode.Uri[] = await vscode.workspace.findFiles(
       "**/package.json",
@@ -41,7 +41,6 @@ const baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
         });
       if (selectedPackage !== undefined) {
         baseDirectory = vscode.Uri.file(selectedPackage);
-        vscode.window.showInformationMessage("Base directory found.");
         resolve(baseDirectory);
       } else {
         vscode.window.showErrorMessage(
@@ -53,40 +52,8 @@ const baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
   }
 );
 
-const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
-  async (resolve, reject) => {
-    let boilerplaceInit: vscode.Uri | null;
-    const boilerplaceCheck: vscode.Uri[] = await vscode.workspace.findFiles(
-      "**/boilerplace.json"
-    );
-    if (boilerplaceCheck.length == 0) {
-      vscode.window.showErrorMessage(
-        "Couldnt find boilerpalce.json. Run boilerpalce init first"
-      );
-      reject(null);
-    } else if (boilerplaceCheck.length == 1) {
-      boilerplaceInit = boilerplaceCheck[0];
-      resolve(boilerplaceInit);
-    } else {
-      const boilerplaceOptions: string[] = [];
-      boilerplaceCheck.forEach((element) => {
-        boilerplaceOptions.push(element.fsPath);
-      });
-      const selectedBoilerplace: string | undefined =
-        await vscode.window.showQuickPick(boilerplaceOptions, {
-          placeHolder: "Select a boilerplace.json",
-        });
-      if (selectedBoilerplace !== undefined) {
-        boilerplaceInit = vscode.Uri.file(selectedBoilerplace);
-        resolve(boilerplaceInit);
-      } else {
-        vscode.window.showErrorMessage(
-          "No boilerplace.json found. Run boilerplace init first."
-        );
-        reject(null);
-      }
-    }
-  }
+let boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
+  async (resolve, reject) => {}
 );
 
-export { workspaceCheck, baseDirectoryCheck, boilerpalceInitCheck };
+export { workspaceCheck, baseDirectoryCheck };
