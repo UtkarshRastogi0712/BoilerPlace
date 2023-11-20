@@ -7,33 +7,24 @@ import { identifierValidator } from "./identifier.validator";
 import initFile from "./boilerplates/boilerplace.init.json";
 import appFile from "./boilerplates/boilerplace.app.js";
 import schema from "./boilerplace.schema";
-import {
-  workspaceCheck,
-  baseDirectoryCheck,
-  boilerpalceInitCheck,
-} from "./helpers/startup.utilities";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
 
-  let origin: vscode.Uri | null = workspaceCheck();
-  let baseDirectory: vscode.Uri | null;
-  baseDirectoryCheck
-    .then((value) => {
-      baseDirectory = value;
-    })
-    .catch(() => {
-      baseDirectory = null;
-    });
+  let origin: vscode.Uri | null = null;
+  let baseDirectory: vscode.Uri | null = null;
   let boilerplaceInit: vscode.Uri | null = null;
-  boilerpalceInitCheck
-    .then((value) => {
-      boilerplaceInit = value;
-    })
-    .catch(() => {
-      boilerplaceInit = null;
-    });
   let entryPoint: vscode.Uri | null = null;
+
+  let workspaceCheck = () => {
+    if (vscode.workspace.workspaceFolders !== undefined) {
+      origin = vscode.Uri.file(vscode.workspace.workspaceFolders[0].uri.fsPath);
+      vscode.window.showInformationMessage("Workspace opened.");
+    } else {
+      vscode.window.showErrorMessage("Open a workspace folder to begin.");
+      return;
+    }
+  };
 
   let disposable = vscode.commands.registerCommand(
     "boilerplace.helloWorld",
@@ -57,22 +48,59 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  const init = vscode.commands.registerCommand("boilerplace.init", () => {
-    if (!origin) {
-      async () => {
-        origin = await workspaceCheck();
-      };
-      return;
-    }
-
-    if (!baseDirectory) {
-      async () => {
-        baseDirectory = await baseDirectoryCheck;
-      };
+  const init = vscode.commands.registerCommand("boilerplace.init", async () => {
+    if (vscode.workspace.workspaceFolders !== undefined) {
+      origin = vscode.Uri.file(vscode.workspace.workspaceFolders[0].uri.fsPath);
+      const packageCheck: vscode.Uri[] = await vscode.workspace.findFiles(
+        "**/package.json",
+        "**/node_modules/**/package.json"
+      );
+      if (packageCheck.length == 0) {
+        vscode.window.showErrorMessage(
+          "No package.json found. Initialize node project to start."
+        );
+        return;
+      } else if (packageCheck.length == 1) {
+        baseDirectory = vscode.Uri.file(path.dirname(packageCheck[0].fsPath));
+        console.log(baseDirectory);
+      } else {
+        const packageOptions: string[] = [];
+        packageCheck.forEach((element) => {
+          packageOptions.push(path.dirname(element.fsPath));
+        });
+        const selectedPackage: string | undefined =
+          await vscode.window.showQuickPick(packageOptions, {
+            placeHolder: "Select a package.json",
+          });
+        if (selectedPackage !== undefined) {
+          baseDirectory = vscode.Uri.file(selectedPackage);
+        } else {
+          vscode.window.showErrorMessage(
+            "No package.json found. Initialize node project to start."
+          );
+          return;
+        }
+        console.log(baseDirectory);
+      }
+    } else {
+      vscode.window.showErrorMessage("Open a workspace folder to begin.");
       return;
     }
 
     try {
+      /*
+      let selectedText: string = "Enter the preferred variable name!";
+      const textQuery: string | undefined = await vscode.window.showInputBox({
+        placeHolder: "Text query",
+        prompt: "Enter text",
+        value: selectedText,
+      });
+
+      if (textQuery === undefined || !identifierValidator(textQuery)) {
+        vscode.window.showErrorMessage("Enter a valid variable name");
+        return;
+      }*/
+
       boilerplaceInit = vscode.Uri.joinPath(origin, "/boilerplace.json");
       const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
       const enc: TextEncoder = new TextEncoder();
@@ -95,24 +123,42 @@ export function activate(context: vscode.ExtensionContext) {
     "boilerplace.create",
     async () => {
       if (!origin) {
-        async () => {
-          origin = await workspaceCheck();
-        };
+        vscode.window.showErrorMessage("Open a workspace folder to begin.");
         return;
-      }
-
-      if (!baseDirectory) {
-        async () => {
-          baseDirectory = await baseDirectoryCheck;
-        };
+      } else if (!baseDirectory) {
+        vscode.window.showErrorMessage(
+          "No package.json found. Initialize node project to start."
+        );
         return;
-      }
-
-      if (!boilerplaceInit) {
-        async () => {
-          boilerplaceInit = await boilerpalceInitCheck;
-        };
-        return;
+      } else {
+        const boilerplaceCheck: vscode.Uri[] = await vscode.workspace.findFiles(
+          "**/boilerplace.json"
+        );
+        if (boilerplaceCheck.length == 0) {
+          vscode.window.showErrorMessage(
+            "Couldnt find boilerpalce.json. Run boilerpalce init first"
+          );
+          return;
+        } else if (boilerplaceCheck.length == 1) {
+          boilerplaceInit = boilerplaceCheck[0];
+        } else {
+          const boilerplaceOptions: string[] = [];
+          boilerplaceCheck.forEach((element) => {
+            boilerplaceOptions.push(element.fsPath);
+          });
+          const selectedBoilerplace: string | undefined =
+            await vscode.window.showQuickPick(boilerplaceOptions, {
+              placeHolder: "Select a boilerplace.json",
+            });
+          if (selectedBoilerplace !== undefined) {
+            boilerplaceInit = vscode.Uri.file(selectedBoilerplace);
+          } else {
+            vscode.window.showErrorMessage(
+              "No boilerplace.json found. Run boilerplace init first."
+            );
+            return;
+          }
+        }
       }
 
       try {
@@ -125,7 +171,7 @@ export function activate(context: vscode.ExtensionContext) {
         const validationResults = schema.validate(boilerpalceData);
         if (validationResults.error) {
           vscode.window.showErrorMessage(
-            "Invalid input in boilerplace.json. Does not match expected schema."
+            "Invalid input in boilerplace.json.Does not match expected schema."
           );
           return;
         } else {
