@@ -125,7 +125,7 @@ export function activate(context: vscode.ExtensionContext) {
         const validationResults = schema.validate(boilerpalceData);
         if (validationResults.error) {
           vscode.window.showErrorMessage(
-            "Invalid input in boilerplace.json. Does not match expected schema."
+            "Invalid input in boilerplace.json.Does not match expected schema."
           );
           return;
         } else {

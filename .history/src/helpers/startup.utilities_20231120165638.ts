@@ -66,7 +66,6 @@ const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
       reject(null);
     } else if (boilerplaceCheck.length == 1) {
       boilerplaceInit = boilerplaceCheck[0];
-      vscode.window.showInformationMessage("Boilerplace.json found");
       resolve(boilerplaceInit);
     } else {
       const boilerplaceOptions: string[] = [];
@@ -79,7 +78,6 @@ const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
         });
       if (selectedBoilerplace !== undefined) {
         boilerplaceInit = vscode.Uri.file(selectedBoilerplace);
-        vscode.window.showInformationMessage("Boilerplace.json found");
         resolve(boilerplaceInit);
       } else {
         vscode.window.showErrorMessage(
