@@ -154,9 +154,7 @@ export function activate(context: vscode.ExtensionContext) {
           let flag: boolean = true;
           for (let i = 0; i < entities.length; i++) {
             const entity: string = JSON.parse(JSON.stringify(entities[i])).name;
-            if (
-              !boilerplaceComponentCreate(baseDirectory, entity, entity + ".js")
-            ) {
+            if (!boilerplaceComponentCreate(baseDirectory, entity)) {
               flag = false;
             }
             if (!flag) {
