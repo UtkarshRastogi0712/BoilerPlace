@@ -10,8 +10,10 @@ import schema from "./boilerplace.schema";
 import {
   workspaceCheck,
   baseDirectoryCheck,
-  boilerpalceInitCheck,
+  boilerplaceInitCheck,
 } from "./helpers/startup.utilities";
+import boilerplaceComponentCreate from "./helpers/component.create";
+import databaseFile from "./boilerplates/boilerplace.database";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
@@ -26,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
       baseDirectory = null;
     });
   let boilerplaceInit: vscode.Uri | null = null;
-  boilerpalceInitCheck
+  boilerplaceInitCheck
     .then((value) => {
       boilerplaceInit = value;
     })
@@ -110,57 +112,73 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (!boilerplaceInit) {
         async () => {
-          boilerplaceInit = await boilerpalceInitCheck;
+          boilerplaceInit = await boilerplaceInitCheck;
         };
         return;
       }
 
       try {
-        let boilerpalceData: any = await vscode.workspace.fs
+        let boilerplaceData: any = await vscode.workspace.fs
           .readFile(boilerplaceInit)
           .then((data) => {
             return JSON.parse(data.toString());
           });
-        vscode.window.showInformationMessage(JSON.stringify(boilerpalceData));
-        const validationResults = schema.validate(boilerpalceData);
+        vscode.window.showInformationMessage(JSON.stringify(boilerplaceData));
+        const validationResults = schema.validate(boilerplaceData);
         if (validationResults.error) {
           vscode.window.showErrorMessage(
             "Invalid input in boilerplace.json. Does not match expected schema."
           );
           return;
         } else {
-          //create app.js file;
+          const entities: Array<any> = boilerplaceData.entities;
+          let entityList: Array<string> = [];
+          for (let i = 0; i < entities.length; i++) {
+            entityList.push(JSON.parse(JSON.stringify(entities[i])).name);
+          }
+
           entryPoint = vscode.Uri.joinPath(
             baseDirectory,
-            boilerpalceData.entryPoint
+            boilerplaceData.entryPoint
           );
           const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
           const enc: TextEncoder = new TextEncoder();
-          const app: Uint8Array = enc.encode(appFile());
-          vscode.workspace.fs
-            .readFile(vscode.Uri.file("../boilerplates/testapp.js"))
-            .then((data) => {
-              vscode.window.showInformationMessage(data.toString());
-            });
+          const app: Uint8Array = enc.encode(appFile(entityList));
+          const database: Uint8Array = enc.encode(databaseFile());
 
           wsedits.createFile(entryPoint, {
             ignoreIfExists: true,
             contents: app,
           });
+
+          wsedits.createFile(
+            vscode.Uri.joinPath(baseDirectory, "database.js"),
+            {
+              ignoreIfExists: true,
+              contents: database,
+            }
+          );
           vscode.workspace.applyEdit(wsedits);
           vscode.window.showInformationMessage("app.js ready to be configured");
-
-          ///
-          if (vscode.workspace.workspaceFolders !== undefined) {
-            vscode.workspace.fs
-              .readDirectory(vscode.workspace.workspaceFolders[0].uri)
-              .then((elements) => {
-                elements.forEach((element) => {
-                  vscode.window.showInformationMessage(element[0]);
-                });
-              });
+          let flag: boolean = true;
+          for (let i = 0; i < entities.length; i++) {
+            const entity: string = JSON.parse(JSON.stringify(entities[i])).name;
+            if (!identifierValidator(entity)) {
+              vscode.window.showErrorMessage(
+                entity +
+                  "is not a valid variable name. Ensure entities follow variable naming convention"
+              );
+              break;
+            }
+            if (!boilerplaceComponentCreate(baseDirectory, entity)) {
+              flag = false;
+            }
+            if (!flag) {
+              vscode.window.showErrorMessage(
+                "Could not create one or more files properly."
+              );
+            }
           }
-          ///
         }
       } catch (err) {
         console.error(err);
