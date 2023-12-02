@@ -13,6 +13,7 @@ import {
   boilerplaceInitCheck,
 } from "./helpers/startup.utilities";
 import boilerplaceComponentCreate from "./helpers/component.create";
+import databaseFile from "./boilerplates/boilerplace.database";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
@@ -143,11 +144,20 @@ export function activate(context: vscode.ExtensionContext) {
           const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
           const enc: TextEncoder = new TextEncoder();
           const app: Uint8Array = enc.encode(appFile(entityList));
+          const database: Uint8Array = enc.encode(databaseFile());
 
           wsedits.createFile(entryPoint, {
             ignoreIfExists: true,
             contents: app,
           });
+
+          wsedits.createFile(
+            vscode.Uri.joinPath(baseDirectory, "database.js"),
+            {
+              ignoreIfExists: true,
+              contents: database,
+            }
+          );
           vscode.workspace.applyEdit(wsedits);
           vscode.window.showInformationMessage("app.js ready to be configured");
           let flag: boolean = true;

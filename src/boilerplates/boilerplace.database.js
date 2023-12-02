@@ -1,6 +1,6 @@
 function databaseFile() {
   return `
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const MONGO_URI = process.env.MONGO_URI;
 const MONGO_NAME = process.env.MONGO_NAME;
 
