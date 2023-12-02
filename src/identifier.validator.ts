@@ -1,4 +1,4 @@
-export function identifierValidator(identifier: string) {
+export function identifierValidator(identifier: string): boolean {
   const reservedWords: string[] = [
     "abstract",
     "arguments",
@@ -81,8 +81,7 @@ export function identifierValidator(identifier: string) {
     "transient",
     "volatile",
   ];
-  const regex =
-    /^[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*$^[a-zA-Z0-9]+$/;
+  const regex = /^[_$a-zA-Z][_$a-zA-Z0-9]{0,255}$/;
   if (!reservedWords.includes(identifier) && regex.test(identifier)) {
     return true;
   }

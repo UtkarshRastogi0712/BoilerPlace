@@ -130,18 +130,19 @@ export function activate(context: vscode.ExtensionContext) {
           );
           return;
         } else {
+          const entities: Array<any> = boilerplaceData.entities;
+          let entityList: Array<string> = [];
+          for (let i = 0; i < entities.length; i++) {
+            entityList.push(JSON.parse(JSON.stringify(entities[i])).name);
+          }
+
           entryPoint = vscode.Uri.joinPath(
             baseDirectory,
             boilerplaceData.entryPoint
           );
           const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
           const enc: TextEncoder = new TextEncoder();
-          const app: Uint8Array = enc.encode(appFile());
-          vscode.workspace.fs
-            .readFile(vscode.Uri.file("../boilerplates/testapp.js"))
-            .then((data) => {
-              vscode.window.showInformationMessage(data.toString());
-            });
+          const app: Uint8Array = enc.encode(appFile(entityList));
 
           wsedits.createFile(entryPoint, {
             ignoreIfExists: true,
@@ -149,11 +150,16 @@ export function activate(context: vscode.ExtensionContext) {
           });
           vscode.workspace.applyEdit(wsedits);
           vscode.window.showInformationMessage("app.js ready to be configured");
-
-          const entities: Array<any> = boilerplaceData.entities;
           let flag: boolean = true;
           for (let i = 0; i < entities.length; i++) {
             const entity: string = JSON.parse(JSON.stringify(entities[i])).name;
+            if (!identifierValidator(entity)) {
+              vscode.window.showErrorMessage(
+                entity +
+                  "is not a valid variable name. Ensure entities follow variable naming convention"
+              );
+              break;
+            }
             if (!boilerplaceComponentCreate(baseDirectory, entity)) {
               flag = false;
             }
