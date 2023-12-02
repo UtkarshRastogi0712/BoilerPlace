@@ -21,12 +21,12 @@ const baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
       "**/node_modules/**/package.json"
     );
     let baseDirectory: vscode.Uri;
-    if (packageCheck.length == 0) {
+    if (packageCheck.length === 0) {
       vscode.window.showErrorMessage(
         "No package.json found. Initialize node project to start."
       );
       reject(null);
-    } else if (packageCheck.length == 1) {
+    } else if (packageCheck.length === 1) {
       baseDirectory = vscode.Uri.file(path.dirname(packageCheck[0].fsPath));
       vscode.window.showInformationMessage("Base directory found.");
       resolve(baseDirectory);
@@ -59,12 +59,12 @@ const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
     const boilerplaceCheck: vscode.Uri[] = await vscode.workspace.findFiles(
       "**/boilerplace.json"
     );
-    if (boilerplaceCheck.length == 0) {
+    if (boilerplaceCheck.length === 0) {
       vscode.window.showErrorMessage(
         "Couldnt find boilerpalce.json. Run boilerplace init first"
       );
       reject(null);
-    } else if (boilerplaceCheck.length == 1) {
+    } else if (boilerplaceCheck.length === 1) {
       boilerplaceInit = boilerplaceCheck[0];
       vscode.window.showInformationMessage("Boilerplace.json found");
       resolve(boilerplaceInit);

@@ -1,4 +1,4 @@
 {
-  "entryPoint": "app.js path",
-  "entities": [{ "name": "name of entity" }]
+  "entryPoint": "app.js",
+  "entities": [{ "name": "name" }]
 }

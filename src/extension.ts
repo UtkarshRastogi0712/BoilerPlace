@@ -12,6 +12,7 @@ import {
   baseDirectoryCheck,
   boilerpalceInitCheck,
 } from "./helpers/startup.utilities";
+import boilerplaceComponentCreate from "./helpers/component.create";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "boilerplace" is now active!');
@@ -129,7 +130,6 @@ export function activate(context: vscode.ExtensionContext) {
           );
           return;
         } else {
-          //create app.js file;
           entryPoint = vscode.Uri.joinPath(
             baseDirectory,
             boilerpalceData.entryPoint
@@ -150,17 +150,13 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.workspace.applyEdit(wsedits);
           vscode.window.showInformationMessage("app.js ready to be configured");
 
-          ///
-          if (vscode.workspace.workspaceFolders !== undefined) {
-            vscode.workspace.fs
-              .readDirectory(vscode.workspace.workspaceFolders[0].uri)
-              .then((elements) => {
-                elements.forEach((element) => {
-                  vscode.window.showInformationMessage(element[0]);
-                });
-              });
+          if (
+            boilerplaceComponentCreate(baseDirectory, "routes", "entity.js")
+          ) {
+            vscode.window.showInformationMessage("All files created");
+          } else {
+            vscode.window.showErrorMessage("Couldnt create files");
           }
-          ///
         }
       } catch (err) {
         console.error(err);
