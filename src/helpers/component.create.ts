@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 import { TextEncoder } from "util";
-import routerFile from "../boilerplates/boilerplace.routes";
 import controllerFile from "../boilerplates/boilerplace.controllers";
 import serviceFile from "../boilerplates/boilerplace.services";
 import schemaFile from "../boilerplates/boilerplace.schema.js";
+import routerFile from "../boilerplates/boilerplace.routes";
 
 let boilerplaceComponentCreate = (
   baseUri: vscode.Uri,
@@ -13,18 +13,7 @@ let boilerplaceComponentCreate = (
     try {
       const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
       const enc: TextEncoder = new TextEncoder();
-      const content: Uint8Array = enc.encode("Content for file");
 
-      wsedits.createFile(
-        vscode.Uri.joinPath(
-          baseUri,
-          `boilerplace/${fileName}/${fileName}.router.js`
-        ),
-        {
-          contents: content,
-        }
-      );
-      /*
       const routerContents: Uint8Array = enc.encode(routerFile(fileName));
       const controllerContents: Uint8Array = enc.encode(
         controllerFile(fileName)
@@ -78,10 +67,9 @@ let boilerplaceComponentCreate = (
           ignoreIfExists: true,
           contents: schemaContents,
         }
-      );*/
+      );
 
       vscode.workspace.applyEdit(wsedits);
-      vscode.window.showInformationMessage("Files ready to be configured");
       return true;
     } catch {
       return false;

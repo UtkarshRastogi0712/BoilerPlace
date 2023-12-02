@@ -1,5 +1,5 @@
 function serviceFile(entityName) {
-  entity = entityName.charAt(0).toUpperCase() + string.slice(1);
+  const entity = entityName.charAt(0).toUpperCase() + entityName.slice(1);
   return `import ${entity} from "./${entityName}.schema";
 
 const create${entity} = async (${entityName}) => {

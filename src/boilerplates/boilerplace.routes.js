@@ -1,5 +1,5 @@
 function routerFile(entityName) {
-  entity = entityName.charAt(0).toUpperCase() + string.slice(1);
+  const entity = entityName.charAt(0).toUpperCase() + entityName.slice(1);
   return `import { Router } from "express";
 import {
  create${entity}Controller,
