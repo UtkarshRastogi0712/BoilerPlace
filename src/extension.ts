@@ -10,7 +10,7 @@ import schema from "./boilerplace.schema";
 import {
   workspaceCheck,
   baseDirectoryCheck,
-  boilerpalceInitCheck,
+  boilerplaceInitCheck,
 } from "./helpers/startup.utilities";
 import boilerplaceComponentCreate from "./helpers/component.create";
 
@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
       baseDirectory = null;
     });
   let boilerplaceInit: vscode.Uri | null = null;
-  boilerpalceInitCheck
+  boilerplaceInitCheck
     .then((value) => {
       boilerplaceInit = value;
     })
@@ -111,19 +111,19 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (!boilerplaceInit) {
         async () => {
-          boilerplaceInit = await boilerpalceInitCheck;
+          boilerplaceInit = await boilerplaceInitCheck;
         };
         return;
       }
 
       try {
-        let boilerpalceData: any = await vscode.workspace.fs
+        let boilerplaceData: any = await vscode.workspace.fs
           .readFile(boilerplaceInit)
           .then((data) => {
             return JSON.parse(data.toString());
           });
-        vscode.window.showInformationMessage(JSON.stringify(boilerpalceData));
-        const validationResults = schema.validate(boilerpalceData);
+        vscode.window.showInformationMessage(JSON.stringify(boilerplaceData));
+        const validationResults = schema.validate(boilerplaceData);
         if (validationResults.error) {
           vscode.window.showErrorMessage(
             "Invalid input in boilerplace.json. Does not match expected schema."
@@ -132,7 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
         } else {
           entryPoint = vscode.Uri.joinPath(
             baseDirectory,
-            boilerpalceData.entryPoint
+            boilerplaceData.entryPoint
           );
           const wsedits: vscode.WorkspaceEdit = new vscode.WorkspaceEdit();
           const enc: TextEncoder = new TextEncoder();
@@ -150,12 +150,20 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.workspace.applyEdit(wsedits);
           vscode.window.showInformationMessage("app.js ready to be configured");
 
-          if (
-            boilerplaceComponentCreate(baseDirectory, "routes", "entity.js")
-          ) {
-            vscode.window.showInformationMessage("All files created");
-          } else {
-            vscode.window.showErrorMessage("Couldnt create files");
+          const entities: Array<any> = boilerplaceData.entities;
+          let flag: boolean = true;
+          for (let i = 0; i < entities.length; i++) {
+            const entity: string = JSON.parse(JSON.stringify(entities[i])).name;
+            if (
+              !boilerplaceComponentCreate(baseDirectory, entity, entity + ".js")
+            ) {
+              flag = false;
+            }
+            if (!flag) {
+              vscode.window.showErrorMessage(
+                "Could not create one or more files properly."
+              );
+            }
           }
         }
       } catch (err) {

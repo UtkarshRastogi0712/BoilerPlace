@@ -53,7 +53,7 @@ const baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
   }
 );
 
-const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
+const boilerplaceInitCheck: Promise<vscode.Uri | null> = new Promise(
   async (resolve, reject) => {
     let boilerplaceInit: vscode.Uri | null;
     const boilerplaceCheck: vscode.Uri[] = await vscode.workspace.findFiles(
@@ -61,7 +61,7 @@ const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
     );
     if (boilerplaceCheck.length === 0) {
       vscode.window.showErrorMessage(
-        "Couldnt find boilerpalce.json. Run boilerplace init first"
+        "Couldnt find boilerplace.json. Run boilerplace init first"
       );
       reject(null);
     } else if (boilerplaceCheck.length === 1) {
@@ -91,4 +91,4 @@ const boilerpalceInitCheck: Promise<vscode.Uri | null> = new Promise(
   }
 );
 
-export { workspaceCheck, baseDirectoryCheck, boilerpalceInitCheck };
+export { workspaceCheck, baseDirectoryCheck, boilerplaceInitCheck };
