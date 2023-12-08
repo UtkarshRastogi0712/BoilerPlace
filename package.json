@@ -2,12 +2,18 @@
   "name": "boilerplace",
   "displayName": "Boilerplace",
   "description": "A handy extension for all things boilerplate",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/UtkarshRastogi0712/BoilerPlace"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.83.0"
   },
+  "icon": "./BoilerplaceLogo.png",
   "categories": [
-    "Other"
+    "Snippets",
+    "Extension Packs"
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
