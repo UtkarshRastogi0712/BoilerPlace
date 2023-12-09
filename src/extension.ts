@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   let origin: vscode.Uri | null = workspaceCheck();
   let baseDirectory: vscode.Uri | null;
-  baseDirectoryCheck
+  baseDirectoryCheck()
     .then((value) => {
       baseDirectory = value;
     })
@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
       baseDirectory = null;
     });
   let boilerplaceInit: vscode.Uri | null = null;
-  boilerplaceInitCheck
+  boilerplaceInitCheck()
     .then((value) => {
       boilerplaceInit = value;
     })
@@ -61,16 +61,18 @@ export function activate(context: vscode.ExtensionContext) {
 
   const init = vscode.commands.registerCommand("boilerplace.init", () => {
     if (!origin) {
-      async () => {
-        origin = await workspaceCheck();
-      };
+      origin = workspaceCheck();
       return;
     }
 
     if (!baseDirectory) {
-      async () => {
-        baseDirectory = await baseDirectoryCheck;
-      };
+      baseDirectoryCheck()
+        .then((value) => {
+          baseDirectory = value;
+        })
+        .catch(() => {
+          baseDirectory = null;
+        });
       return;
     }
 
@@ -97,23 +99,29 @@ export function activate(context: vscode.ExtensionContext) {
     "boilerplace.create",
     async () => {
       if (!origin) {
-        async () => {
-          origin = await workspaceCheck();
-        };
+        origin = workspaceCheck();
         return;
       }
 
       if (!baseDirectory) {
-        async () => {
-          baseDirectory = await baseDirectoryCheck;
-        };
+        baseDirectoryCheck()
+          .then((value) => {
+            baseDirectory = value;
+          })
+          .catch(() => {
+            baseDirectory = null;
+          });
         return;
       }
 
       if (!boilerplaceInit) {
-        async () => {
-          boilerplaceInit = await boilerplaceInitCheck;
-        };
+        boilerplaceInitCheck()
+          .then((value) => {
+            boilerplaceInit = value;
+          })
+          .catch(() => {
+            boilerplaceInit = null;
+          });
         return;
       }
 
@@ -186,7 +194,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(disposable, init);
+  context.subscriptions.push(disposable, init, create);
 }
 
 export function deactivate() {}

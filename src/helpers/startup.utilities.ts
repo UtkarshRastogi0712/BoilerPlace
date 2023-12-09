@@ -14,8 +14,8 @@ let workspaceCheck = (): vscode.Uri | null => {
   }
 };
 
-const baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
-  async (resolve, reject) => {
+const baseDirectoryCheck = (): Promise<vscode.Uri | null> => {
+  return new Promise<vscode.Uri | null>(async (resolve, reject) => {
     const packageCheck: vscode.Uri[] = await vscode.workspace.findFiles(
       "**/package.json",
       "**/node_modules/**/package.json"
@@ -50,11 +50,11 @@ const baseDirectoryCheck: Promise<vscode.Uri | null> = new Promise(
         reject(null);
       }
     }
-  }
-);
+  });
+};
 
-const boilerplaceInitCheck: Promise<vscode.Uri | null> = new Promise(
-  async (resolve, reject) => {
+const boilerplaceInitCheck = (): Promise<vscode.Uri | null> => {
+  return new Promise(async (resolve, reject) => {
     let boilerplaceInit: vscode.Uri | null;
     const boilerplaceCheck: vscode.Uri[] = await vscode.workspace.findFiles(
       "**/boilerplace.json"
@@ -88,7 +88,7 @@ const boilerplaceInitCheck: Promise<vscode.Uri | null> = new Promise(
         reject(null);
       }
     }
-  }
-);
+  });
+};
 
 export { workspaceCheck, baseDirectoryCheck, boilerplaceInitCheck };
