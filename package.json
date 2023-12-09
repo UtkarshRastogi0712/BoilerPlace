@@ -7,7 +7,7 @@
     "type": "github",
     "url": "https://github.com/UtkarshRastogi0712/BoilerPlace"
   },
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.83.0"
   },
